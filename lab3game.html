@@ -1,0 +1,175 @@
+<html>
+<head>
+	<title> game</title>
+	<style type="text/css">
+   
+    #cont{
+    	width: 300px;
+    }
+    td:hover{
+       cursor:hand;
+    }
+	</style>
+</head>
+<body>
+	<table id="cont">
+  <th><td>score</td><td id="result"></td><td>Time</td><td id="cnt">0:00</td></th>
+ <script type="text/javascript">
+
+  var imgs = new Array(16);
+  var firstImage  = secondImage = -1,matches =tmr=start=index=0,tid;
+  
+function randOrd(){
+         return (Math.round(Math.random())-0.5);
+} 
+function setCookie(c_name,value,expiredays)
+  {
+      var exdate=new Date();
+
+      exdate.setDate(exdate.getDate()+expiredays);
+      document.cookie=c_name+ "=" +escape(value)+
+      ((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+  }
+function getCookie(c_name)
+ {
+
+      if (document.cookie.length>0)
+      {
+        
+        c_start=document.cookie.indexOf(c_name + "=");
+        if (c_start!=-1)
+        {
+          c_start=c_start + c_name.length+1;
+          c_end=document.cookie.indexOf(";",c_start);
+          if (c_end==-1) c_end=document.cookie.length;
+          return unescape(document.cookie.substring(c_start,c_end));
+        }
+      }
+     return "";
+ }
+
+     for (var i = 0 ; i<= 3; i++) {
+     	 document.write("<tr>");
+       for( var x= 0;x<= 3 ;x++)
+     	  {
+     	
+     	    document.write("<td><img  src='game/9.png' width='64' height='64' onclick='changePic("+(index++)+")'/></td>");
+       }
+
+       document.writeln("</tr>");
+       
+     }
+
+for (var i = 0; i <= 7; i++) {
+   
+    imgs[i]="game/"+(i+1)+".png";
+};
+
+for (var z = 15; z >= 8; z--) {
+  
+   imgs[z]="game/"+(z-7)+".png";
+};
+
+
+function changePic(y)
+ {
+  if(document.images[y].src.indexOf('9') != -1)
+   { 
+    if(start != 0)
+    {
+     if(firstImage == -1){ //first click
+
+         document.images[y].src=imgs[y];
+         firstImage = y;
+         
+        }
+     else{   //second click
+
+         if(secondImage == -1){
+            document.images[y].src=imgs[y];
+            secondImage = y;   
+
+            
+
+            if(document.images[firstImage].src == document.images[secondImage].src){
+               matches++;
+               document.getElementById('result').innerHTML=matches;
+               if((document.images.length/2) == matches)
+                 {
+                   alert("you win");
+                   /** finish goes here **/
+                    finishGame();
+                 }
+                firstImage = secondImage = -1;
+             }else{
+           
+                 setTimeout('document.images[firstImage].src="game/9.png";document.images[secondImage].src="game/9.png"; firstImage = secondImage = -1;',500);       
+             }
+             
+          }
+        
+     }
+   }else{
+    alert("press start button");
+   }
+ }else{
+   alert("already clicked");
+ }
+ }
+
+ function startGame()
+  {
+    tmr=0;
+ 
+    imgs.sort( randOrd );
+    for (var i = 0; i < document.images.length; i++) {
+      document.images[i].src=imgs[i];
+    }
+    start=1;
+    matches=0;
+    document.getElementById('result').innerHTML=matches;
+    setTimeout("hideAll()",500);
+    cntr();
+    if(tid)
+     {clearInterval(tid);} 
+      tid = setInterval('cntr()', 1000);
+
+  }
+ function hideAll()
+  {
+     for (var i =0; i < document.images.length; i++) {
+       document.images[i].src="game/9.png";
+     }
+  } 
+ function cntr() {
+ var min = Math.floor(tmr/60);var sec = tmr%60;
+ document.getElementById('cnt').innerHTML = min+':'+ (sec<10 ? '0' : '') + sec;tmr++;
+} 
+function finishGame()
+ {
+    clearTimeout(tid);
+    var ans=confirm("are you want save score");
+    if(ans)
+      {
+        var name=prompt('Enter your name', '');
+        setCookie(name,matches,365);
+        alert("thank you\t"+name+"\tYour score saved");
+                     
+      }
+ }
+ </script>
+ </table>
+ 
+ <input type="submit" value="startGame" onclick="startGame()"/>
+
+ <div>
+scores:
+  <script>
+
+    
+     document.writeln(document.cookie); 
+   
+  </script>
+ </div>
+</body>
+</html>
